@@ -328,6 +328,7 @@ async function setUpPreconnectedFakeDevice(setupOptionsOverride) {
         address: setupOptions.fakeDeviceOptions.address,
         name: setupOptions.fakeDeviceOptions.name,
         knownServiceUUIDs: setupOptions.fakeDeviceOptions.knownServiceUUIDs,
+        security: setupOptions.fakeDeviceOptions.security,
       });
 
   if (setupOptions.fakeDeviceOptions.connectable) {
@@ -376,13 +377,15 @@ async function setUpPreconnectedFakeDevice(setupOptionsOverride) {
 async function setUpPreconnectedDevice({
   address = '00:00:00:00:00:00',
   name = 'LE Device',
-  knownServiceUUIDs = []
+  knownServiceUUIDs = [],
+  security: 'none'
 }) {
   await initializeFakeCentral({state: 'powered-on'});
   return await fake_central.simulatePreconnectedPeripheral({
     address: address,
     name: name,
     knownServiceUUIDs: knownServiceUUIDs,
+    security: security,
   });
 }
 
@@ -393,6 +396,7 @@ const blocklistFakeDeviceOptionsDefault = {
   address: '11:11:11:11:11:11',
   name: 'Blocklist Device',
   knownServiceUUIDs: ['generic_access', blocklist_test_service_uuid],
+  security: 'none',
   connectable: true,
   serviceDiscoveryComplete: true
 };
@@ -451,11 +455,13 @@ async function getBlocklistDevice(setupOptionsOverride = {}) {
       await fake_blocklist_test_service.addFakeCharacteristic({
         uuid: blocklist_exclude_reads_characteristic_uuid,
         properties: ['read', 'write'],
+        security: 'none',
       });
   let fake_blocklist_exclude_writes_characteristic =
       await fake_blocklist_test_service.addFakeCharacteristic({
         uuid: 'gap.peripheral_privacy_flag',
         properties: ['read', 'write'],
+        security: 'none',
       });
 
   let fake_blocklist_descriptor =
@@ -677,6 +683,7 @@ async function getConnectedHIDDevice(
   await dev_info.addFakeCharacteristic({
     uuid: 'serial_number_string',
     properties: ['read'],
+    security: 'none',
   });
   return fakeDevice;
 }
@@ -714,6 +721,7 @@ function setUpHealthThermometerDevice() {
     address: '09:09:09:09:09:09',
     name: 'Health Thermometer',
     knownServiceUUIDs: ['generic_access', 'health_thermometer'],
+    security: 'none',
   });
 }
 
@@ -758,6 +766,7 @@ async function populateHealthThermometerFakes(fake_peripheral) {
       await fake_health_thermometer.addFakeCharacteristic({
         uuid: 'measurement_interval',
         properties: ['read', 'write', 'indicate'],
+        security: 'none',
       });
   let fake_user_description =
       await fake_measurement_interval.addFakeDescriptor({
@@ -770,11 +779,13 @@ async function populateHealthThermometerFakes(fake_peripheral) {
       await fake_health_thermometer.addFakeCharacteristic({
         uuid: 'temperature_measurement',
         properties: ['indicate'],
+        security: 'none',
       });
   let fake_temperature_type =
       await fake_health_thermometer.addFakeCharacteristic({
         uuid: 'temperature_type',
         properties: ['read'],
+        security: 'none',
       });
   return {
     fake_peripheral,
@@ -1123,11 +1134,13 @@ async function setUpHealthThermometerAndHeartRateDevices() {
       address: '09:09:09:09:09:09',
       name: 'Health Thermometer',
       knownServiceUUIDs: ['generic_access', 'health_thermometer'],
+      security: 'none',
     }),
     fake_central.simulatePreconnectedPeripheral({
       address: '08:08:08:08:08:08',
       name: 'Heart Rate',
       knownServiceUUIDs: ['generic_access', 'heart_rate'],
+      security: 'none',
     })
   ]);
 }
